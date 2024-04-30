@@ -1,0 +1,334 @@
+TUGAS 7 DATABASE MYSQL
+
+NAMA    : Rifqi Zaidan Abiyan
+KAMPUS  : UNIVERSITAS SERANG RAYA
+
+SOAL 6.1
+
+1. DELIMITER $$
+MariaDB [dbpos1]> CREATE PROCEDURE pro_naik(
+    -> IN jenis_produk INT,
+    -> IN persentasi_kenaikan INT )
+    -> BEGIN
+    -> UPDATE produk SET harga_jual = harga_jual + (harga_jual * persentasi_kenaikan / 100)
+    -> WHERE jenis_produk_id = jenis_produk;
+    -> END $$
+DELIMITER ;
+MariaDB [dbpos1]> CALL pro_naik(1,4);
+
++-------------------+------------+-----------------+
+| nama              | harga_jual | jenis_produk_id |
++-------------------+------------+-----------------+
+| Televisi 21 inchs |   54620800 |               1 |
+| Televisi 40 inch  |    8047104 |               1 |
+| Kulkas 2 pintu    |    5061888 |               1 |
+| Meja Makan        |     600000 |               2 |
+| Teh Kotak         |       3500 |               4 |
+| PC Desktop HP     |    9984000 |               5 |
+| Teh Botol         |       2500 |               4 |
+| Notebook Acer S   |   11232000 |               5 |
+| Notebook Lenovo   |   12480000 |               5 |
+| Laptop Lenovo     |   17305600 |               1 |
+| Kopi              |      30000 |               4 |
+| Teh Sosro 2       |      16224 |               1 |
+| Laptop Asus       |    5408000 |               1 |
+| Televisi 22 inc`  |   54620800 |               1 |
+| Televisi 23 inc   |   54620800 |               1 |
+| Televisi 24 inc   |   54620800 |               1 |
+| Televisi 25 inc   |   54620800 |               1 |
+| Televisi 27 inc   |   54620800 |               1 |
+| Televisi 28 inc   |   54620800 |               1 |
+| Televisi 29 inc   |   54620800 |               1 |
+| Teh Pucuk         |       5000 |               4 |
+| Teh Pucuk2        |       5000 |               4 |
+| Produk A          |     108.16 |               1 |
+| Produk B          |        150 |               2 |
+| Produk C          |     216.32 |               1 |
++-------------------+------------+-----------------+
+
++-------------------+------------+-----------------+
+| nama              | harga_jual | jenis_produk_id |
++-------------------+------------+-----------------+
+| Televisi 21 inchs |   56805632 |               1 |
+| Televisi 40 inch  | 8368988.16 |               1 |
+| Kulkas 2 pintu    | 5264363.52 |               1 |
+| Meja Makan        |     600000 |               2 |
+| Teh Kotak         |       3500 |               4 |
+| PC Desktop HP     |    9984000 |               5 |
+| Teh Botol         |       2500 |               4 |
+| Notebook Acer S   |   11232000 |               5 |
+| Notebook Lenovo   |   12480000 |               5 |
+| Laptop Lenovo     |   17997824 |               1 |
+| Kopi              |      30000 |               4 |
+| Teh Sosro 2       |   16872.96 |               1 |
+| Laptop Asus       |    5624320 |               1 |
+| Televisi 22 inc`  |   56805632 |               1 |
+| Televisi 23 inc   |   56805632 |               1 |
+| Televisi 24 inc   |   56805632 |               1 |
+| Televisi 25 inc   |   56805632 |               1 |
+| Televisi 27 inc   |   56805632 |               1 |
+| Televisi 28 inc   |   56805632 |               1 |
+| Televisi 29 inc   |   56805632 |               1 |
+| Teh Pucuk         |       5000 |               4 |
+| Teh Pucuk2        |       5000 |               4 |
+| Produk A          |   112.4864 |               1 |
+| Produk B          |        150 |               2 |
+| Produk C          |   224.9728 |               1 |
++-------------------+------------+-----------------+
+
+
+2. MariaDB [dbpos1]> CREATE FUNCTION umur(tgl_lahir DATE)
+    -> RETURNS INT
+    -> BEGIN
+    -> DECLARE umur INT;
+    -> SET umur = YEAR(CURDATE()) - YEAR(tgl_lahir);
+    -> RETURN umur;
+    -> END $$
+Query OK, 0 rows affected (0.038 sec)
+MariaDB [dbpos1]> SELECT nama, umur(tgl_lahir) AS umur FROM pelanggan;
+
++--------------------+------+
+| nama               | umur |
++--------------------+------+
+| Agung Sedayu Group |   14 |
+| Pandan Wangi       |   74 |
+| Sekar Mirah        |   41 |
+| Swandaru Geni      |   43 |
+| Pradabashu         |   39 |
+| Gayatri Dwi        |   37 |
+| Dewi Gyat          |   36 |
+| Andre Haru         |   34 |
+| Ahmad Hasan        |   32 |
+| Cassanndra         |   34 |
+| Andi Wijaya        |    1 |
+| Ira                |    1 |
++--------------------+------+
+
+3. MariaDB [dbpos_sib6]> DELIMITER $$
+ CREATE FUNCTION kategori_harga(harga DOUBLE) RETURNS VARCHAR(20)BEGIN
+    ->     DECLARE kategori VARCHAR(20);
+    ->
+    ->     IF harga <= 500000 THEN
+    ->         SET kategori = 'murah';
+    ->     ELSEIF harga <= 3000000 THEN
+    ->         SET kategori = 'sedang';
+    ->     ELSEIF harga <= 10000000 THEN
+    ->         SET kategori = 'mahal';
+    ->     ELSE
+    ->         SET kategori = 'sangat mahal';
+    ->     END IF;
+    ->
+    ->     RETURN kategori;
+    -> END$$
+     SELECT kategori_harga(harga_jual) AS kategori FROM produk;
++--------------+
+| kategori     |
++--------------+
+| sangat mahal |
+| mahal        |
+| mahal        |
+| sedang       |
+| murah        |
+| mahal        |
+| murah        |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| murah        |
+| murah        |
+| mahal        |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| sangat mahal |
+| murah        |
+| murah        |
+| murah        |
+| murah        |
+| murah        |
++--------------+
+
+SOAL 6.2
+
+1. MariaDB [dbpos_sib6]> SELECT * FROM pesanan;
++----+------------+---------+--------------+
+| id | tanggal    | total   | pelanggan_id |
++----+------------+---------+--------------+
+|  1 | 2015-11-04 | 9720000 |            1 |
+|  2 | 2015-11-04 |   17500 |            3 |
+|  3 | 2015-11-04 |       0 |            6 |
+|  4 | 2015-11-04 |       0 |            7 |
+|  5 | 2015-11-04 |       0 |           10 |
+|  6 | 2015-11-04 |       0 |            2 |
+|  7 | 2015-11-04 |       0 |            5 |
+|  8 | 2015-11-04 |       0 |            4 |
+|  9 | 2015-11-04 |       0 |            8 |
+| 10 | 2015-11-04 |       0 |            9 |
+| 11 | 2015-11-04 |   30000 |            9 |
++----+------------+---------+--------------+
+DELIMITER $$
+CREATE TRIGGER cek_pembayaran BEFORE INSERT ON pembayaran
+FOR EACH ROW
+BEGIN
+DECLARE total_bayar DECIMAL(10, 2);
+DECLARE total_pesanan DECIMAL(10, 2);
+SELECT SUM(jumlah) INTO total_bayar FROM pembayaran WHERE pesanan_id = NEW.pesanan_id;
+SELECT total INTO total_pesanan FROM pesanan WHERE id = NEW.pesanan_id;
+IF total_bayar + NEW.jumlah >= total_pesanan THEN
+SET NEW.status_pembayaran = 'Lunas';
+END IF;
+END $$
+INSERT INTO pembayaran (no_kuitansi, tanggal, jumlah, ke, pesanan_id, status_pembayaran)
+VALUES ('KWI001', '2023-03-03', 200000, 1, 1);
+
++----+------------+------------+--------+------+------------+-------------------+-------------+
+| id | nokuitansi | tanggal    | jumlah | ke   | pesanan_id | status_pembayaran | no_kuitansi |
++----+------------+------------+--------+------+------------+-------------------+-------------+
+|  1 | MD001      | 0000-00-00 |  30000 |    1 |         11 | Lunas             | NULL        |
+|  2 | MD002      | 2023-10-10 |  30000 |    2 |         11 | Lunas             | NULL        |
+|  3 | MD003      | 2023-10-10 |  30000 |    1 |         11 | Lunas             | NULL        |
+|  4 | MD004      | 2023-10-10 |  15000 |    1 |          2 |                   | NULL        |
+|  5 | MD005      | 2023-10-10 |  18000 |    2 |          2 | Lunas             | NULL        |
+|  6 | NULL       | 2023-03-03 | 200000 |    1 |          1 | NULL              | KWI001      |
++----+------------+------------+--------+------+------------+-------------------+-------------+
+
+2. DELIMITER $$
+CREATE TRIGGER trig_kurangi_stok AFTER INSERT ON pesanan_items
+FOR EACH ROW
+BEGIN
+  -- Memanggil stored procedure kurangi_stok untuk mengurangi stok produk
+  CALL kurangi_stok(NEW.produk_id, NEW.qty);
+END $$
+DELIMITER ;
+
+SELECT * FROM `produk`
+
+INSERT INTO pesanan_items (produk_id, pesanan_id, qty, harga) VALUES 
+(7, 3, 2, 7000)
+
+SELECT * FROM `produk`
+
+
+HOW CREATE PROCEDURE kurangi_stok;
++--------------+-----------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| Procedure    | sql_mode                                            | Create Procedure
+
+
+
+    | character_set_client | collation_connection | Database Collation |
++--------------+-----------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| kurangi_stok | NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION | CREATE DEFINER=`root`@`localhost` PROCEDURE `kurangi_stok`(
+    IN produk_id INT,
+    IN jumlah_pesanan INT
+)
+BEGIN
+    DECLARE stok_produk INT;
+SELECT stok INTO stok_produk FROM produk WHERE id = produk_id;
+SET stok_produk = stok_produk - jumlah_pesanan;
+IF stok_produk < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stok produk tidak mencukupi';
+    END IF;
+UPDATE produk SET stok = stok_produk WHERE id = produk_id;
+END | cp850                | cp850_general_ci     | utf8mb4_general_ci |
++--------------+-----------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+
+3. DELIMITER $$
+CREATE TRIGGER trig_kurangi_stok AFTER INSERT ON pesanan_items
+FOR EACH ROW
+BEGIN
+  -- Memanggil stored procedure kurangi_stok untuk mengurangi stok produk
+  CALL kurangi_stok(NEW.produk_id, NEW.qty);
+END $$
+DELIMITER ;
+
+SELECT * FROM `produk`
+
+INSERT INTO pesanan_items (produk_id, pesanan_id, qty, harga) VALUES 
+(7, 3, 2, 7000)
+
+SELECT * FROM `produk`
+
+
+
+MariaDB [dbpos_sib6]> SELECT * FROM produk;
++----+--------+-------------------+------------+------------+------+----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+| id | kode   | nama              | harga_beli | harga_jual | stok | min_stok | foto                   | deskripsi
+
+                                                                     | jenis_produk_id |
++----+--------+-------------------+------------+------------+------+----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+|  1 | TV01   | Televisi 21 inchs |    3500000 |   56805632 |    0 |        2 |                        | NULL
+
+                                                                     |               1 |
+|  2 | TV02   | Televisi 40 inch  |    5500000 | 8368988.16 |    4 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+|  3 | K001   | Kulkas 2 pintu    |    3500000 | 5264363.52 |    6 |        2 |                        | NULL
+
+                                                                     |               1 |
+|  4 | M001   | Meja Makan        |     500000 |     600000 |    4 |        3 | NULL                   | NULL
+
+                                                                     |               2 |
+|  5 | TK01   | Teh Kotak         |       3000 |       3500 |    6 |       10 | foto-5.png             | NULL
+
+                                                                     |               4 |
+|  6 | PC01   | PC Desktop HP     |    7000000 |    9984000 |    9 |        2 | NULL                   | NULL
+
+                                                                     |               5 |
+|  7 | TB01   | Teh Botol         |       2000 |       2500 |   51 |       10 | foto-7.jpg             | NULL
+
+                                                                     |               4 |
+|  8 | AC01   | Notebook Acer S   |    8000000 |   11232000 |    7 |        2 | NULL                   | NULL
+
+                                                                     |               5 |
+|  9 | LN01   | Notebook Lenovo   |    9000000 |   12480000 |    9 |        2 | NULL                   | NULL
+
+                                                                     |               5 |
+| 11 | L005   | Laptop Lenovo     |   13000000 |   17997824 |    5 |        2 |                        | NULL
+
+                                                                     |               1 |
+| 15 | L112   | Kopi              |      20000 |      30000 |   10 |       15 | foto-15.png            | Luwak White Coffee merupakan bubuk biji kopi luwak yang dikombinasikan dengan gurihnya krimer serta manisnya gula. Keharuman kopi serta rasa manisnya yang pas juga membuat popularitas Luwak White Coffee melejit. |               4 |
+| 16 | L113   | Teh Sosro 2       |      10000 |   16872.96 |   10 |       12 | .png                   | NULL
+
+                                                                     |               1 |
+| 18 | L0015  | Laptop Asus       |    3000000 |    5624320 |   10 |       20 | foto-65542ffa66604.jpg | NULL
+
+                                                                     |               1 |
+| 19 | TV0115 | Televisi 22 inc`  |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 20 | TV0116 | Televisi 23 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 21 | TV0117 | Televisi 24 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 22 | TV0118 | Televisi 25 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 24 | TV0120 | Televisi 27 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 25 | TV0121 | Televisi 28 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 26 | TV0122 | Televisi 29 inc   |    3500000 |   56805632 |    5 |        2 | NULL                   | NULL
+
+                                                                     |               1 |
+| 27 | THP001 | Teh Pucuk         |       4000 |       5000 |   10 |        2 | pucuk.jpg              | Teh pucuk adalah
+
+                                                                     |               4 |
+| 28 | THP002 | Teh Pucuk2        |       4000 |       5000 |   10 |        2 | pucuk.jpg              | Teh pucuk adalah
+                                                                     |               4 |
+| 35 | P001   | Produk A          |          0 |   112.4864 |    5 |        0 | NULL                   | NULL
+
+                                                                     |               1 |
+| 36 | P002   | Produk B          |          0 |        150 |   15 |        0 | NULL                   | NULL
+
+                                                                     |               2 |
+| 37 | P003   | Produk C          |          0 |   224.9728 |   20 |        0 | NULL                   | NULL
+
+                                                                     |               1 |
++----+--------+-------------------+------------+------------+------+----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
